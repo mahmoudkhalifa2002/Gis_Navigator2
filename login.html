@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تسجيل الدخول - GIS Navigator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+      font-family: 'Cairo', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      color: white;
+    }
+
+    .form-container {
+      background: white;
+      color: #333;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #1d4ed8;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    input {
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #1d4ed8;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2563eb;
+    }
+
+    .forgot-link {
+      text-align: right;
+      margin-bottom: 15px;
+    }
+
+    .forgot-link a {
+      color: #1d4ed8;
+      text-decoration: underline;
+      font-size: 14px;
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .register-link a {
+      color: #1d4ed8;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>تسجيل الدخول</h2>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="البريد الإلكتروني" required>
+      <input type="password" id="password" placeholder="كلمة المرور" required>
+      <div class="forgot-link">
+        <a href="#" id="forgotPasswordLink">هل نسيت كلمة السر؟</a>
+      </div>
+      <button type="submit">دخول</button>
+    </form>
+    <div class="register-link">
+      ليس لديك حساب؟ <a href="signup.html">سجّل الآن</a>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAkDiDoWSoCOZuHN3I3OQr0i2Hehm0iujg",
+      authDomain: "gisnavigator-6e173.firebaseapp.com",
+      projectId: "gisnavigator-6e173",
+      storageBucket: "gisnavigator-6e173.appspot.com",
+      messagingSenderId: "966504359774",
+      appId: "1:966504359774:web:4a5963d663bd11bd1fd1cf"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const device = navigator.userAgent;
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          const user = userCredential.user;
+          const userRef = db.collection("users").doc(user.uid);
+
+          return userRef.get().then(doc => {
+            if (!doc.exists) throw new Error("لم يتم العثور على بيانات المستخدم.");
+            const data = doc.data();
+
+            if (data.role === "admin" || data.role === "student") {
+              // تحقق من الجهاز
+              if (!data.currentDevice) {
+                // أول مرة يتم فيها الدخول — احفظ الجهاز
+                return userRef.update({ currentDevice: device }).then(() => data);
+              } else if (data.currentDevice !== device) {
+                // جهاز مختلف
+                throw new Error("❌ هذا الحساب مستخدم على جهاز آخر.");
+              }
+              return data;
+            } else {
+              throw new Error("❌ حسابك غير مصرح له بالدخول.");
+            }
+          });
+        })
+        .then(userData => {
+          localStorage.setItem("studentName", userData.name || "");
+          alert("✅ تم تسجيل الدخول بنجاح!");
+          window.location.href = "dashboard.html";
+        })
+        .catch(error => {
+          alert(error.message);
+          auth.signOut();
+        });
+    });
+
+    // إعادة تعيين كلمة المرور
+    document.getElementById("forgotPasswordLink").addEventListener("click", function(e) {
+      e.preventDefault();
+      const email = prompt("من فضلك أدخل بريدك الإلكتروني لإرسال رابط إعادة تعيين كلمة المرور:");
+      if (email) {
+        auth.sendPasswordResetEmail(email)
+          .then(() => {
+            alert("📧 تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.");
+          })
+          .catch(error => {
+            alert("❌ حدث خطأ: " + error.message);
+          });
+      }
+    });
+  </script>
+</body>
+</html>

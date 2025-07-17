@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>شهادة إتمام - GIS Navigator</title>
+  <link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Cairo&display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white min-h-screen flex items-center justify-center p-6">
+  <div id="certArea" class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-10 text-center max-w-2xl w-full">
+    <h1 class="text-3xl font-bold mb-4">شهادة إتمام الدورة</h1>
+    <p class="text-lg mb-6">تشهد منصة GIS Navigator أن:</p>
+    <h2 id="studentName" class="text-2xl font-bold text-blue-600 mb-4">الاسم</h2>
+    <p class="mb-6">قد أتم جميع دروس دورة <strong>نظم المعلومات الجغرافية (GIS)</strong> بنجاح وعددها 50 درس.</p>
+    <p class="mt-6 text-right font-semibold">التوقيع:</p>
+    <p class="text-right italic text-blue-700">ENG/Mahmoud Khalifa</p>
+    <button onclick="downloadPDF()" class="mt-8 bg-green-600 text-white py-3 px-6 rounded hover:bg-green-500">تحميل الشهادة PDF</button>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem('gisUser'));
+    const completed = JSON.parse(localStorage.getItem('completedLessons')) || [];
+
+    if (!user || completed.length < 50) {
+      alert("يجب إنهاء جميع الدروس للحصول على الشهادة.");
+      window.location.href = "dashboard.html";
+    } else {
+      document.getElementById("studentName").textContent = user.name;
+    }
+
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(20);
+      doc.text("GIS Navigator", 105, 20, { align: "center" });
+
+      doc.setFontSize(14);
+      doc.text("تشهد منصة GIS Navigator أن:", 105, 40, { align: "center" });
+      doc.setFont("Helvetica", "bold");
+      doc.text(user.name, 105, 50, { align: "center" });
+      doc.setFont("Helvetica", "normal");
+      doc.text("قد أتم بنجاح دورة نظم المعلومات الجغرافية (GIS) بعد إنهاء 50 درس.", 105, 60, { align: "center" });
+
+      doc.text("التوقيع:", 20, 90);
+      doc.text("ENG/Mahmoud Khalifa", 20, 100);
+
+      doc.save("gis_certificate.pdf");
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>GIS Navigator - الصفحة الرئيسية</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      
+      font-family: 'Cairo', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom, #f9f9f9, #e6f0f8);
+      color: #333;
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+      position: relative;
+      z-index: 0;
+    }
+
+    header, footer {
+      background: #2c3e50;
+      color: white;
+      padding: 20px 10px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header .logo {
+      width: 120px;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    nav a {
+      color: white;
+      margin: 0 10px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    main {
+      padding: 30px 20px;
+      max-width: 1000px;
+      margin: auto;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .button {
+      display: inline-block;
+      background-color: #3498db;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 6px;
+      text-decoration: none;
+      margin-top: 20px;
+      font-weight: bold;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .button:hover {
+      background-color: #2980b9;
+      transform: scale(1.05);
+    }
+
+    h2, h3 {
+      animation: fadeIn 1.2s ease;
+    }
+
+    @keyframes fadeIn {
+      0% {opacity: 0; transform: translateY(20px);}
+      100% {opacity: 1; transform: translateY(0);}
+    }
+
+    
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin: 40px 0;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      animation: fadeIn 1.6s ease;
+    }
+
+    .stats div {
+      font-size: 1.2rem;
+      margin: 10px 0;
+    }
+
+    .testimonials {
+      margin: 50px 0;
+    }
+
+    .testimonial-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .testimonial {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: right;
+      animation: fadeIn 2s ease;
+    }
+
+    .testimonial-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .testimonial-header img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      bottom: 15px;
+      left: 15px;
+      background: #ffffffcc;
+      color: #333;
+      border: 2px solid #ccc;
+      padding: 10px 15px;
+      border-radius: 50px;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      transition: background 0.3s, transform 0.3s;
+      z-index: 10;
+    }
+
+    .theme-toggle:hover {
+      transform: rotate(15deg);
+    }
+
+    .dark-mode {
+      background-color: #121212;
+      color: #f1f1f1;
+    }
+
+    .dark-mode header,
+    .dark-mode footer {
+      background-color: #1e1e1e;
+    }
+
+    .dark-mode .stats,
+    .dark-mode #countdown,
+    .dark-mode .testimonial {
+      background-color: #2c2c2c;
+      color: #f1f1f1;
+    }
+
+    .dark-mode a {
+      color: #90caf9;
+    }
+
+    .dark-mode h2,
+    .dark-mode h3,
+    .dark-mode p,
+    .dark-mode strong,
+    .dark-mode div {
+      color: #f1f1f1;
+    }
+
+    .dark-mode .button {
+      background-color: #3498db;
+      color: white;
+    }
+
+    .dark-mode .theme-toggle {
+      background: #333;
+      color: #fff;
+      border-color: #555;
+    }
+
+    /* فيديو الخلفية */
+    #bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+    .intro {
+  background-color: rgba(0, 0, 0, 0.5); /* خلفية شفافة داكنة */
+  color: white;                       /* لون النص أبيض */
+  padding: 30px;
+  border-radius: 15px;
+  max-width: 750px;
+  margin: auto;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+  margin-top: 30px;
+}
+
+.intro strong {
+  color: #ffffff;
+}
+
+.dark-mode .intro {
+  background-color: rgba(255, 255, 255, 0.1); /* أفتح قليلًا للوضع الليلي */
+  color: #ffffff;
+}
+nav a {
+  color: white;
+  margin: 0 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: color 0.3s;
+}
+
+nav a:hover {
+  color: #1abc9c;
+}
+.testimonials h3 {
+  color: #fff;
+}
+.start-button {
+  display: inline-block;
+  background-color: #3498db;
+  color: white;
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: pulse 2s infinite;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.start-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px 10px rgba(52, 152, 219, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(52, 152, 219, 0);
+  }
+}
+footer .social-links {
+  margin-top: 10px;
+  text-align: center;
+}
+
+footer .social-links a {
+  margin: 0 15px;
+  display: inline-block;
+}
+
+footer .social-links img {
+  transition: transform 0.3s;
+}
+
+footer .social-links a:hover img {
+  transform: scale(1.2);
+}
+.student-projects {
+  margin: 40px 0;
+  text-align: center;
+}
+
+.student-projects h3 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.projects-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.project-card {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.project-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.project-info h4 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.project-info p {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #777;
+}
+
+.project-info strong {
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.project-media {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.project-media video {
+  border-radius: 8px;
+}
+/* الوضع الافتراضي */
+.student-projects h3 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: white; /* اللون الأبيض */
+}
+
+/* الوضع المظلم */
+.dark-mode .student-projects h3 {
+  color: white; /* اللون الأبيض للوضع المظلم أيضًا */
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- فيديو ترحيبي كخلفية -->
+  <video autoplay muted loop id="bg-video">
+    <source src="video/intro.mp4" type="video/mp4">
+    متصفحك لا يدعم تشغيل الفيديو.
+  </video>
+
+ <header style="position: sticky; top: 0; z-index: 999; background-color: #2c3e50; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+  <div class="header-container">
+    <!-- الشعار - يمين -->
+    <div class="header-logo">
+      <img src="photo_٢٠٢٥-٠٢-١٨_٢٢-٥٥-٥٤.jpg" alt="شعار الدورة" class="logo">
+    </div>
+
+    <!-- العنوان - منتصف -->
+    <div class="header-title">
+      <h1>GIS Navigator</h1>
+    </div>
+
+    <!-- الروابط - يسار -->
+    <nav class="header-nav">
+      <a href="videos.html">الدروس</a>
+      <a href="certificate.html">الشهادة</a>
+      <a href="faq.html">الأسئلة</a>
+      <a href="login.html">تسجيل الدخول</a>
+    </nav>
+  </div>
+</header>
+
+
+
+
+  <main>
+  <div class="intro">
+    <h2>كورس نظم المعلومات الجغرافية (GIS)</h2>
+    <p>
+      تدريب نظري وعملي شامل من إعداد <strong>بشمهندس محمود خليفة</strong><br>
+      يشمل 50 درسًا، مشاريع تطبيقية، وشهادة معتمدة عند الإتمام.
+    </p>
+    <a href="signup.html" class="start-button"> <h2>ابدأ الآن بالتسجيل</h2></a>
+  </div>
+    
+
+    
+
+    <section class="stats">
+      <div>📚 عدد الدروس: <strong>50+</strong></div>
+      <div>👨‍🎓 عدد الطلاب: <strong>+1200</strong></div>
+      <div>🏆 شهادة معتمدة</div>
+    </section>
+
+    <section class="testimonials">
+  <h3>آراء الطلاب</h3>
+  <div class="testimonial-cards">
+    
+    <div class="testimonial">
+      <div class="testimonial-header">
+        <img src="images/sara.jpg" alt="سيد مصطفي">
+        <div>
+          <strong>سيد مصطفي</strong><br>
+          "الدورة ممتازة جدًا، استفدت منها كثيرًا في مشروعي."
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="testimonial-header">
+        <img src="images/ahmed.jpg" alt="ياسر الزناتي">
+        <div>
+          <strong>ياسر الزناتي</strong><br>
+          "أفضل دورة GIS حضرتها حتى الآن، التطبيق العملي مفيد جدًا."
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="testimonial-header">
+        <img src="images/leila.jpg" alt="عمر سمير">
+        <div>
+          <strong>عمر سمير</strong><br>
+          "محتوى منظم وشرح مبسط، أنصح الجميع بالتسجيل."
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="testimonial-header">
+        <img src="images/WhatsApp Image 2025-07-16 at 23.48.27_78d37d64.jpg" alt="محمد رضا">
+        <div>
+          <strong>محمد رضا</strong><br>
+          "الكورس ممتاز جدا والبشمهندس محمود بيشرح بطريقه مبسطه تخليك تفهم كل المستويات بسهوله."
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="testimonial-header">
+        <img src="images/360_F_302884605_actpipOdPOQHDTnFtp4zg4RtlWzhOASp.jpg" alt="روميساء أحمد">
+        <div>
+          <strong>روميساء أحمد</strong><br>
+          "الكورس جميل جدًا والشرح مُبسط، أنصح أي حد مهتم بمجال GIS ياخد الكورس."
+        </div>
+      </div>
+    </div>
+<div class="testimonial">
+  <div class="testimonial-header">
+    <img src="images/28-4-2023_20_40_34_GomhuriaOnline_182زفة1.jpg" alt=" السيد الباز">
+    <div>
+      <strong> السيد الباز</strong><br>
+      "شرف ليا أن رأيي يكون موجود في ابلكيشن حضرتك بتعمله 
+بس بجد شرح الكورسات بيكون كويس جداً منظم وشرح بالتفصيل وكويس جدا"
+    </div>
+  </div>
+</div>
+
+<div class="testimonial">
+  <div class="testimonial-header">
+    <img src="images/vvvv.jpg" alt=" اسامة فوزي">
+    <div>
+      <strong> اسامة فوزي</strong><br>
+      "مبدايا اخلاص كامل ف الشرح مع سهوله في توصيل المعلومه ومساعده مستمره ف اي وقت واي مكان وال GIS في امان مع بشمهندس محمود خليفه ♥🎖"
+    </div>
+  </div>
+</div>
+
+<div class="testimonial">
+  <div class="testimonial-header">
+    <img src="images/WhatsApp Image 2025-07-17 at 00.22.04_2d7cce55.jpg" alt=" رنا ياسر">
+    <div>
+      <strong> رنا ياسر</strong><br>
+      " أفضل دوره مع شرح مبسط جدا ومفهوم مع المتابعه"
+    </div>
+  </div>
+</div>
+
+<div class="testimonial">
+  <div class="testimonial-header">
+    <img src="images/cccc.jpg" alt=" مصطفي رجب ">
+    <div>
+      <strong> مصطفي رجب</strong><br>
+      "الدوره ممتازه جدا والمهندس ممتاز شرحو مبسط ومنظم واهم من دا التطبيق العملي افضل دوره GIS"
+    </div>
+  </div>
+</div>
+
+<div class="testimonial">
+  <div class="testimonial-header">
+    <img src="images/FFFF.jpg" alt="ابراهيم صبحي">
+    <div>
+      <strong>ابراهيم صبحي</strong><br>
+      "احسن مهندس فهمت منه وشرح مبسط ♥"
+    </div>
+  </div>
+</div>
+<div class="testimonial">
+  <div class="testimonial-header">
+    <img src="images/BBBB.jpg" alt="رفاء رضا">
+    <div>
+      <strong> رفاء رضا</strong><br>
+      "عموما يعني الكورس كويس جدا وبنستفيد والشرح حلو وبتعرف توصل المعلومه للمستمع ف دي حاجه كويسه والاهم عندك صبر وطوله بال😹♥"
+    </div>
+  </div>
+</div>
+<div class="testimonial">
+  <div class="testimonial-header">
+    <img src="images/WhatsApp Image 2025-07-17 at 11.13.33_ecf27e28.jpg" alt="مريم احمد ">
+    <div>
+      <strong> مريم احمد</strong><br>
+      "بجد الشرح حلو جدا  بشمهندس محمود من الناس اللى عندها ضمير وبيبسط الشرح ويساعد فى كل حاجه  الصراحه ندمت انى مخدتش الكورس من بدرى"
+    </div>
+  </div>
+</div>
+<div class="testimonial">
+  <div class="testimonial-header">
+    <img src="images/WhatsApp Image 2025-07-17 at 00.37.48_105ee9a4.jpg" alt=" محمد خالد ">
+    <div>
+      <strong> محمد خالد</strong><br>
+      ""أوصي بشدة أي شخص يرغب في الدخول في مجال البيانات الجغرافية بأن يأخذ هذا الكورس. إنه يوفر أساسًا قويًا في GIS ويمكن أن يكون بداية رائعة للعمل في هذا المجال.""
+    </div>
+  </div>
+</div>
+  </div>
+</section>
+
+  </main>
+<section class="student-projects">
+  <h3>مشاريع الطلاب</h3>
+  <div class="projects-gallery">
+    
+    <div class="project-card">
+      <img src="images/photo_٢٠٢٥-٠٥-٢٦_٠٢-٠٤-٤٩.jpg" alt="مشروع 1" class="project-image">
+      <div class="project-info">
+        <h4>مشروع 1: تحليل شبكي للقاهرة واظهارها 3d </h4>
+        <p>في هذا المشروع، قامت الطالبة بتحليل بيانات جغرافية باستخدام أدوات GIS لعرض نتائج التحليل في خريطة تفاعلية.</p>
+        <strong>الطالبة: بسملة زويد</strong>
+        <div class="project-media">
+          <video width="320" height="240" controls>
+            <source src="video/project1.mp4" type="video/mp4">
+            متصفحك لا يدعم تشغيل الفيديو.
+          </video>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <img src="images/WhatsApp Image 2025-07-17 at 11.13.33_e1cfvv27e28.jpg" alt="مشروع 2" class="project-image">
+      <div class="project-info">
+        <h4>مشروع 2: مشروع شبه واقعي لجامعة الزقازيق </h4>
+        <p> باستخدام الرسم والتعديل والاظهار الواقعي علي برامج النظم معلومات المختلفة</p>
+        <strong>بشمهندس: محمود خليفة</strong>
+        <div class="project-media">
+          <video width="320" height="240" controls>
+            <source src="video/project2.mp4" type="video/mp4">
+            متصفحك لا يدعم تشغيل الفيديو.
+          </video>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <img src="images/WhatsApp Image 2025-07-17 at 11.13.33_e1cf27e28.jpg" alt="مشروع 3" class="project-image">
+      <div class="project-info">
+        <h4>مشروع 3: نموذج 3D  لمدينتي</h4>
+        <p>قامت الطالبة بإنشاء نموذج ثلاثي الأبعاد لموقع جغرافي باستخدام أدوات GIS لعرض التضاريس بشكل مرئي.</p>
+        <strong>الطالبة:  رؤي ابراهيم</strong>
+        <div class="project-media">
+          <video width="320" height="240" controls>
+            <source src="video/project3.mp4" type="video/mp4">
+            متصفحك لا يدعم تشغيل الفيديو.
+          </video>
+        </div>
+      </div>
+    </div>
+    
+    <!-- مشروع 4 (جديد) -->
+    <div class="project-card">
+      <img src="images/photo_٢٠٢٥-٠٥-٢٦_٠٢-٠٥-٠٧.jpg" alt="مشروع 4" class="project-image">
+      <div class="project-info">
+        <h4>مشروع 4:  رفع ثلاثي الابعاد لمنطقة بالرياض   GIS</h4>
+        <p>تأتى ﻣرحلة النمذﺟة أى التصميم ثلاثي الابعاد الذي قام بها لطالب محمود وصولا للمرحلة النهائية</p>
+        <strong>الطالب: محمود علي</strong>
+        <div class="project-media">
+          <video width="320" height="240" controls>
+            <source src="video/WhatsApp Video 2025-07-17 at 22.31.51_11416c93.mp4" type="video/mp4">
+            متصفحك لا يدعم تشغيل الفيديو.
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <footer>
+    <div>
+        جميع الحقوق محفوظة © 2025 - GIS Navigator
+    </div>
+    <div class="social-links">
+        <a href="https://www.facebook.com/share/15rsmuv2Gx/" target="_blank">
+            <img src="images/facebook.png" alt="فيسبوك" width="30" height="30">
+        </a>
+        <a href="https://t.me/HOODA35" target="_blank">
+            <img src="images/telegram.png" alt="تيليجرام" width="30" height="30">
+        </a>
+        <a href="https://www.instagram.com/hooda142002?igsh=eWV4cXNzaG91dTFo" target="_blank">
+            <img src="images/instagram.png" alt="إنستاجرام" width="30" height="30">
+        </a>
+        <a href="https://api.whatsapp.com/send?phone=+2001097113490&text=َ" target="_blank">
+            <img src="images/whatsapp.png" alt="واتساب" width="30" height="30">
+        </a>
+        <a href="mailto:mmee500500@gmail.com" target="_blank">
+            <img src="images/gmail.png" alt="جيميل" width="30" height="30">
+        </a>
+        <a href="https://youtube.com/@hoodaoppo-tr7hx?si=t4GHSOe67EsmMajd" target="_blank">
+            <img src="images/youtube.png" alt=" يوتيوب" width="30" height="30">
+        </a>
+    </div>
+</footer>
+
+
+  <button class="theme-toggle" onclick="toggleTheme()" id="themeIcon">🌙</button>
+
+  <script>
+    
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark-mode");
+      const icon = document.getElementById("themeIcon");
+      icon.textContent = document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
+    }
+
+    function toggleMusic() {
+      const music = document.getElementById("bg-music");
+      if (music.paused) {
+        music.play();
+      } else {
+        music.pause();
+      }
+    }
+  </script>
+
+</body>
+</html>

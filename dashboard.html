@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>لوحة الطالب - GIS Navigator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      padding: 20px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .header {
+      background-color: #1d4ed8;
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .lessons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .lessons a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px;
+      background-color: #e0e7ff;
+      color: #1e3a8a;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: transform 0.2s ease;
+    }
+
+    .lessons a:hover {
+      transform: scale(1.02);
+      background-color: #c7d2fe;
+    }
+
+    .logout {
+      background-color: #dc2626;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .logout:hover {
+      background-color: #b91c1c;
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: white;
+    }
+
+    .dark-toggle {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 10px 18px;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .dark-toggle:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #0e3fa9, #1a49c9);
+    }
+
+    /* الوضع الليلي */
+    .dark-mode {
+      background-color: #1e293b;
+      color: #fff;
+    }
+
+    .dark-mode .header {
+      background-color: #0f172a;
+    }
+
+    .dark-mode .lessons a {
+      background-color: #334155;
+      color: #fff;
+    }
+
+    .dark-mode .logout {
+      background-color: #991b1b;
+    }
+
+    .dark-mode .copy-btn {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="darkModeBtn" onclick="toggleDarkMode()" class="dark-toggle">🌙 الوضع الليلي</button>
+
+  <div class="header">
+    <h2>مرحبًا، <span id="studentName">الطالب</span> 👋</h2>
+    <p style="margin-top: 10px;">
+      📧 <span id="studentEmail" style="font-weight: bold;"></span>
+      <button onclick="copyEmail()" class="copy-btn">📋</button>
+    </p>
+  </div>
+
+  <div class="lessons">
+    <a href="videos.html"><i class="fas fa-play-circle"></i> فيديوهات الكورس</a>
+    <a href="certificate.html"><i class="fas fa-certificate"></i> الحصول على الشهادة</a>
+    <a href="faq.html"><i class="fas fa-question-circle"></i> الأسئلة الشائعة</a>
+    <a href="https://api.whatsapp.com/send?phone=+2001097113490&text=َ"><i class="fas fa-headset"></i> تواصل مع الدعم الفني</a>
+  </div>
+
+  <button class="logout" onclick="logout()">🚪 تسجيل الخروج</button>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAkDiDoWSoCOZuHN3I3OQr0i2Hehm0iujg",
+      authDomain: "gisnavigator-6e173.firebaseapp.com",
+      projectId: "gisnavigator-6e173",
+      storageBucket: "gisnavigator-6e173.firebasestorage.app",
+      messagingSenderId: "966504359774",
+      appId: "1:966504359774:web:4a5963d663bd11bd1fd1cf",
+      measurementId: "G-6T4ZB8BFS0"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        const uid = user.uid;
+        db.collection("users").doc(uid).get().then(doc => {
+          if (doc.exists) {
+            const userData = doc.data();
+            if (userData.role === "admin" || userData.role === "student") {
+              document.getElementById("studentName").textContent = userData.name || "طالب";
+              document.getElementById("studentEmail").textContent = user.email;
+            } else {
+              alert("❌ ليس لديك صلاحية الدخول لهذه الصفحة.");
+              window.location.href = "login.html";
+            }
+          } else {
+            alert("❌ لا توجد بيانات لهذا المستخدم.");
+            window.location.href = "login.html";
+          }
+        }).catch(error => {
+          console.error("حدث خطأ في التحقق من الصلاحية:", error);
+          window.location.href = "login.html";
+        });
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        localStorage.removeItem("studentName");
+        window.location.href = "login.html";
+      });
+    }
+
+    function copyEmail() {
+      const email = document.getElementById("studentEmail").textContent;
+      navigator.clipboard.writeText(email).then(() => {
+        alert("✅ تم نسخ البريد الإلكتروني");
+      });
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+      const btn = document.getElementById("darkModeBtn");
+      btn.innerHTML = document.body.classList.contains("dark-mode")
+        ? "☀️ الوضع النهاري"
+        : "🌙 الوضع الليلي";
+    }
+  </script>
+</body>
+</html>
